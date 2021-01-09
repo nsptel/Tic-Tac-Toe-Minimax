@@ -80,6 +80,7 @@ class Board:
         return 0
 
     def make_move(self):
+        global BEST_STATE
         move = -1
         if len(self.available_moves) != 0:
             if self.current_player == 'X':
