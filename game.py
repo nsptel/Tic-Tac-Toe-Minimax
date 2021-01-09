@@ -16,18 +16,26 @@ def get_possible_pos(state, player):
 
 def minimax(state, depth, maximizing_player):
     if depth == 0 or Board.winner(state) != 0:
-        return depth * Board.winner(state)
+        return {'position': None, 'score': depth * Board.winner(state)}
 
     if maximizing_player:
         max_eval = -math.inf
+        position = None
         for s in get_possible_pos(state, 1):
-            max_eval = max(max_eval, minimax(s[1], depth-1, False))
-        return max_eval
+            result = minimax(s[1], depth-1, False)
+            if result['score'] > max_eval:
+                max_eval = result['score']
+                position = s[0]
+        return {'position': position, 'score': max_eval}
     else:
         min_eval = math.inf
-        for s in get_possible_pos(state, -1):
-            min_eval = min(min_eval, minimax(s[1], depth-1, True))
-        return min_eval
+        position = None
+        for s in get_possible_pos(state, 1):
+            result = minimax(s[1], depth-1, True)
+            if result['score'] < min_eval:
+                min_eval = result['score']
+                position = s[0]
+        return {'position': position, 'score': min_eval}
 
 
 class Board:
@@ -43,7 +51,7 @@ class Board:
 
     def display_board(self):
         print("========================================================================")
-        print("Current game board (User: 'X', Computer: 'O')")
+        print("Current game board (User: 'O', Computer: 'X')")
         print('+-----------+')
         for i in range(1, 10):
             if i % 3 != 0:
@@ -80,7 +88,6 @@ class Board:
         return 0
 
     def make_move(self):
-        global BEST_STATE
         move = -1
         if len(self.available_moves) != 0:
             if self.current_player == 'X':
@@ -88,9 +95,7 @@ class Board:
                 if len(self.available_moves) == 1:
                     move = self.available_moves[0]
                 else:
-                    move = minimax(deepcopy(self.numerical_board), len(self.available_moves), True)
-                print(move)
-                print(self.available_moves)
+                    move = minimax(deepcopy(self.numerical_board), len(self.available_moves), True)['position']
                 self.available_moves.remove(move)
                 self.user_board[move] = 'X'
                 self.numerical_board[move] = 1
