@@ -10,13 +10,16 @@ def get_possible_pos(state, player):
         if s == 0:
             temp[i] = player
             pos_moves.append((i, temp))
-            temp = state
+            temp = deepcopy(state)
     return pos_moves
 
 
 def minimax(state, depth, maximizing_player):
-    if depth == 0 or Board.winner(state) != 0:
+    if Board.winner(state) != 0:
         return {'position': None, 'score': depth * Board.winner(state)}
+
+    if depth == 0:
+        return {'position': None, 'score': Board.winner(state)}
 
     if maximizing_player:
         max_eval = -math.inf
@@ -30,7 +33,7 @@ def minimax(state, depth, maximizing_player):
     else:
         min_eval = math.inf
         position = None
-        for s in get_possible_pos(state, 1):
+        for s in get_possible_pos(state, -1):
             result = minimax(s[1], depth-1, True)
             if result['score'] < min_eval:
                 min_eval = result['score']
