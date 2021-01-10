@@ -103,7 +103,6 @@ class Board:
                 self.user_board[move] = 'X'
                 self.numerical_board[move] = 1
                 self.display_board()
-                print(self.numerical_board)
                 if Board.winner(self.numerical_board) == 1:
                     print("Computer won the game! Better luck next time.")
                     sys.exit()
@@ -116,8 +115,6 @@ class Board:
                         if move not in self.available_moves:
                             raise Exception
                         else:
-                            print(move)
-                            print(self.available_moves)
                             self.available_moves.remove(move)
                     except:
                         print("Please enter a valid input. Try again.")
